@@ -14,14 +14,6 @@ import java.net.DatagramSocket;
  */
 public class UdpImaageService {
 
-//    Image image = new BufferedImage();
-//
-//    public UdpImaageService() {
-//        this.setTitle("播放器");
-//
-//        this.add();
-//    }
-
     public static void main(String[] args) throws IOException {
         Frame frame = new ImageFrame();
     }
@@ -79,9 +71,7 @@ public class UdpImaageService {
                 }
             } catch (Exception e){
                 datagramSocket.close();
-
             }
-
         }
     }
 
