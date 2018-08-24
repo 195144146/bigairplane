@@ -60,6 +60,8 @@ public class SocketServer {
                 if (packageBean.getType() == 2){
                    String ip = socket.getInetAddress().getHostAddress();
                    Integer port = socket.getPort();
+                   System.out.println(ip);
+                   System.out.println(port);
                    OutputStream outputStream = socket.getOutputStream();
                    outputStream.write("ip:192.168.0.1,port:511235".getBytes());
                 }

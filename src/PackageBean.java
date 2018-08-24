@@ -1,3 +1,8 @@
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * 数据包
  * Created By 虞嘉俊 195144146@qq.com on 2018/8/24
@@ -27,13 +32,13 @@ public class PackageBean {
     /**
      * 包内容
      */
-    String content;
+    Object content;
 
-    public long getUserId(){
+    public Long getUserId(){
         return userId;
     }
 
-    public void setUserId(long userId){
+    public void setUserId(Long userId){
         this.userId = userId;
     }
 
@@ -48,6 +53,17 @@ public class PackageBean {
      */
     public void setType(Integer type) {
         this.type = type;
+        if(type == 1){
+            setIndex(1L);
+            setTotal(1L);
+            Map<String,Object> map = new HashMap<>();
+            map.put("status",(byte) 1);
+            try {
+                setContent(new ObjectMapper().writeValueAsString(map));
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public long getIndex() {
@@ -66,11 +82,11 @@ public class PackageBean {
         this.total = total;
     }
 
-    public String getContent() {
+    public Object getContent() {
         return content;
     }
 
-    public void setContent(String content) {
+    public void setContent(Object content) {
         this.content = content;
     }
 

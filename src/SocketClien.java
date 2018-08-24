@@ -1,6 +1,4 @@
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -10,6 +8,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 /**
+ * socket客户端
  * Created By 虞嘉俊 195144146@qq.com on 2018/8/16
  */
 public class SocketClien {
@@ -19,16 +18,22 @@ public class SocketClien {
         Socket socket = new Socket();
         socket.setReuseAddress(true);
 //        socket.connect(new InetSocketAddress("127.0.0.1",9001));
-        System.out.println(InetAddress.getLocalHost().getHostAddress());
         socket.connect(new InetSocketAddress("195144146.tpddns.cn",9001));
+        System.out.println(InetAddress.getLocalHost().getHostAddress());
         System.out.println(socket.getLocalPort());
+//        启动心跳包
+        new HeartbeatSocket(socket).run();
+
         OutputStream outputStream = socket.getOutputStream();
         PackageBean packageBean = new PackageBean();
-        packageBean.setUserId(1);
+        packageBean.setUserId(1L);
         packageBean.setType(2);
         packageBean.setIndex(1L);
         packageBean.setTotal(1L);
-        packageBean.setContent("{requestUserId:2}");
+        SocketConnectionBean socketConnectionBean = new SocketConnectionBean();
+        socketConnectionBean.setUserId(1L);
+        socketConnectionBean.setRequestUserId(2L);
+        packageBean.setContent(socketConnectionBean);
         ObjectMapper mapper = new ObjectMapper();
         byte[]  s = mapper.writeValueAsBytes(packageBean);
         outputStream.write(s,0,s.length);
@@ -72,6 +77,40 @@ public class SocketClien {
                 e.printStackTrace();
             }
 
+        }
+    }
+
+    /**
+     * 心跳包
+     */
+    public static class HeartbeatSocket implements Runnable {
+        private Socket socket;
+
+        public HeartbeatSocket(Socket socket){
+            this.socket = socket;
+        }
+
+        @Override
+        public void run() {
+            while (true){
+                try {
+                    OutputStream outputStream = socket.getOutputStream();
+                    PackageBean packageBean = new PackageBean();
+                    packageBean.setType(1);
+                    packageBean.setUserId(1);
+                    ObjectMapper json = new ObjectMapper();
+                    String jsonString = json.writeValueAsString(packageBean);
+                    outputStream.write(jsonString.getBytes());
+                    Thread.sleep(60*1000);  //1分钟执行一次
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    try {
+                        socket.close();
+                    } catch (IOException e1) {
+                        System.out.println("socket关闭"+e1.getMessage());
+                    }
+                }
+            }
         }
     }
 
