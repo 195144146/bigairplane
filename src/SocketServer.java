@@ -33,6 +33,9 @@ public class SocketServer {
         }
     }
 
+    /**
+     * Socket服务处理线程
+     */
     public static class RunnableSocket implements Runnable {
 
         private Socket socket;
@@ -57,21 +60,45 @@ public class SocketServer {
                 //判断是否为连接数据
                 ObjectMapper mapper = new ObjectMapper();
                 PackageBean packageBean = mapper.readValue(buf,PackageBean.class);
-                if (packageBean.getType() == 2){
-                   String ip = socket.getInetAddress().getHostAddress(); //获取ip
-                   Integer port = socket.getPort(); //获取端口
-                   System.out.println(ip);
-                   System.out.println(port);
-                   Long userId = packageBean.getUserId();//获取用户id
-                   SocketServer.socketMap.put(userId,socket);//设置有效
-                   SocketConnectionBean socketConnectionBean = (SocketConnectionBean)packageBean.getContent();
-                   if(SocketServer.socketMap.containsKey(socketConnectionBean.getRequestUserId())){
-
-                   }
-                    OutputStream outputStream = socket.getOutputStream();
+                switch (packageBean.getType()){
+                    case 1:
+                        serviceHeartBeat(packageBean.getUserId(),socket);
+                    case 2:
+                        serviceRequestSocket(packageBean,socket);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
+            }
+
+        }
+
+        /**
+         * 心跳处理
+         */
+        private void serviceHeartBeat(Long userId, Socket socket){
+            SocketServer.socketMap.put(userId,socket);
+        }
+
+        /**
+         * 请求连接socket
+         */
+        private void serviceRequestSocket(PackageBean packageBean,Socket socket){
+            String ip = socket.getInetAddress().getHostAddress(); //获取ip
+            Integer port = socket.getPort(); //获取端口
+            System.out.println(ip);
+            System.out.println(port);
+            Long userId = packageBean.getUserId();//获取用户id
+            serviceHeartBeat(userId,socket);//设置有效
+            SocketConnectionBean socketConnectionBean = (SocketConnectionBean)packageBean.getContent();
+            if(SocketServer.socketMap.containsKey(socketConnectionBean.getRequestUserId())){
+                try {
+                    Socket requestSocket = SocketServer.socketMap.get(socketConnectionBean.getRequestUserId());
+                    OutputStream outputStream = socket.getOutputStream();
+
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
 
         }
