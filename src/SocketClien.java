@@ -97,7 +97,7 @@ public class SocketClien {
                     OutputStream outputStream = socket.getOutputStream();
                     PackageBean packageBean = new PackageBean();
                     packageBean.setType(1);
-                    packageBean.setUserId(1);
+                    packageBean.setUserId(1L);
                     ObjectMapper json = new ObjectMapper();
                     String jsonString = json.writeValueAsString(packageBean);
                     outputStream.write(jsonString.getBytes());

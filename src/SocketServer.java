@@ -16,7 +16,7 @@ public class SocketServer {
     /**
      * 连接Socket列表
      */
-    Map<Long,Socket> socketMap = new HashMap<Long,Socket>();
+    public static final Map<Long,Socket> socketMap = new HashMap<Long,Socket>();
 
     public static void main(String[] args) throws IOException {
         //创建socket服务端
@@ -58,12 +58,17 @@ public class SocketServer {
                 ObjectMapper mapper = new ObjectMapper();
                 PackageBean packageBean = mapper.readValue(buf,PackageBean.class);
                 if (packageBean.getType() == 2){
-                   String ip = socket.getInetAddress().getHostAddress();
-                   Integer port = socket.getPort();
+                   String ip = socket.getInetAddress().getHostAddress(); //获取ip
+                   Integer port = socket.getPort(); //获取端口
                    System.out.println(ip);
                    System.out.println(port);
-                   OutputStream outputStream = socket.getOutputStream();
-                   outputStream.write("ip:192.168.0.1,port:511235".getBytes());
+                   Long userId = packageBean.getUserId();//获取用户id
+                   SocketServer.socketMap.put(userId,socket);//设置有效
+                   SocketConnectionBean socketConnectionBean = (SocketConnectionBean)packageBean.getContent();
+                   if(SocketServer.socketMap.containsKey(socketConnectionBean.getRequestUserId())){
+
+                   }
+                    OutputStream outputStream = socket.getOutputStream();
                 }
             } catch (IOException e) {
                 e.printStackTrace();
