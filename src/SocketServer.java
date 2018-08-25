@@ -79,6 +79,8 @@ public class SocketServer {
          */
         private void serviceHeartBeat(Long userId, Socket socket){
             SocketServer.socketMap.put(userId,socket);
+            System.out.println(socket.getInetAddress().getHostAddress());
+            System.out.println(socket.getPort());
         }
 
         /**
