@@ -49,6 +49,7 @@ public class PackageBean {
     /**
      * 1 心跳
      * 2 请求连接
+     * 3 返回请求连接
      * @param type
      */
     public void setType(Integer type) {
