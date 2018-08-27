@@ -105,7 +105,7 @@ public class SocketClien {
                 socket.setReuseAddress(true);
                 socket.bind(new InetSocketAddress(host,port));
                 ObjectMapper objectMapper = new ObjectMapper();
-                SocketConnectionBean socketConnectionBean = objectMapper.readValue(packageBean.getContent().toString(),SocketConnectionBean.class);
+                SocketConnectionBean socketConnectionBean = objectMapper.readValue(objectMapper.writeValueAsString(packageBean.getContent()),SocketConnectionBean.class);
                 socket.connect(new InetSocketAddress(socketConnectionBean.getRequestUserNetAddress(),socketConnectionBean.getRequestUserport()));
                 System.out.println("接受到请求连接ip:"+socketConnectionBean.getRequestUserNetAddress()+" port"+socketConnectionBean.getRequestUserport());
                 String relativelyPath=System.getProperty("user.dir");
