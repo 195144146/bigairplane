@@ -27,15 +27,15 @@ public class SocketClien {
 //        Socket socket = new Socket("195144146.tpddns.cn",9001);
 //        Socket socket = new Socket("127.0.0.1",9001);
         socket = new Socket();
-        socket.setReuseAddress(true);//设置SO_REUSEADDR
+//        socket.setReuseAddress(true);//设置SO_REUSEADDR
 //        socket.connect(new InetSocketAddress("127.0.0.1",9001));
         socket.connect(inetSocketAddress);//连接服务器
         System.out.println(InetAddress.getLocalHost().getHostAddress());
         host = InetAddress.getLocalHost().getHostAddress();
         System.out.println(socket.getLocalPort());
         port = socket.getLocalPort();
-        new HeartbeatSocket(socket).run(); //启动心跳包
-        new RunnableSocket(socket).run(); //启动接受监听
+        new HeartbeatSocket(socket).start(); //启动心跳包
+        new RunnableSocket(socket).start(); //启动接受监听
 
         OutputStream outputStream = socket.getOutputStream();//获取输出流
 
@@ -58,7 +58,7 @@ public class SocketClien {
     /**
      * 接收监听
      */
-    public static class RunnableSocket implements Runnable {
+    public static class RunnableSocket extends Thread {
 
         private Socket socket;
 
@@ -91,7 +91,7 @@ public class SocketClien {
     /**
      * 请求socket连接
      */
-    public static class RequestSocket implements Runnable {
+    public static class RequestSocket extends Thread {
         private PackageBean packageBean;
 
         public RequestSocket(PackageBean packageBean){
@@ -133,7 +133,7 @@ public class SocketClien {
     /**
      * 心跳包
      */
-    public static class HeartbeatSocket implements Runnable {
+    public static class HeartbeatSocket extends Thread {
 
         private Socket socket;
 

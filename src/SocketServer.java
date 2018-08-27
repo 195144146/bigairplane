@@ -29,14 +29,14 @@ public class SocketServer {
             ///监听连接获取socket
             Socket socket = serverSocket.accept();
             //对socket进行操作
-            new RunnableSocket(socket).run();
+            new RunnableSocket(socket).start();
         }
     }
 
     /**
      * Socket服务处理线程
      */
-    public static class RunnableSocket implements Runnable {
+    public static class RunnableSocket extends Thread {
 
         private Socket socket;
 

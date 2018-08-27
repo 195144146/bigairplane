@@ -89,6 +89,7 @@ public class SocketClien2 {
             screenGraphic.drawImage(backgroundImage,0,0,null);
         }
 
+        @Override
         public void paint(Graphics g){
             g.drawImage(screenImage,0,0,null);
         }
