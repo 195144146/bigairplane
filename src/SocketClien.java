@@ -77,7 +77,7 @@ public class SocketClien {
                     PackageBean packageBean = objectMapper.readValue(buf,PackageBean.class);
                     switch (packageBean.getType()){
                         case 3: //接受到视频请求
-                            new RequestSocket(packageBean).run();
+                            new RequestSocket(packageBean).start();
                             break;
                     }
                 }
@@ -106,8 +106,8 @@ public class SocketClien {
                 socket.bind(new InetSocketAddress(host,port));
                 ObjectMapper objectMapper = new ObjectMapper();
                 SocketConnectionBean socketConnectionBean = objectMapper.readValue(objectMapper.writeValueAsString(packageBean.getContent()),SocketConnectionBean.class);
-                socket.connect(new InetSocketAddress(socketConnectionBean.getRequestUserNetAddress(),socketConnectionBean.getRequestUserport()));
                 System.out.println("接受到请求连接ip:"+socketConnectionBean.getRequestUserNetAddress()+" port"+socketConnectionBean.getRequestUserport());
+                socket.connect(new InetSocketAddress(socketConnectionBean.getRequestUserNetAddress(),socketConnectionBean.getRequestUserport()));
                 String relativelyPath=System.getProperty("user.dir");
                 System.load(relativelyPath+"\\out\\production\\UDP\\video\\opencv_java342.dll");
                 VideoCapture cap = new VideoCapture(0);
