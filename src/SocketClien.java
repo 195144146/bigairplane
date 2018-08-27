@@ -26,7 +26,7 @@ public class SocketClien {
 //        Socket socket = new Socket("195144146.tpddns.cn",9001);
 //        Socket socket = new Socket("127.0.0.1",9001);
         socket = new Socket();
-//        socket.setReuseAddress(true);//设置SO_REUSEADDR
+        socket.setReuseAddress(true);//设置SO_REUSEADDR
 //        socket.connect(new InetSocketAddress("127.0.0.1",9001));
         socket.connect(inetSocketAddress);//连接服务器
         System.out.println(InetAddress.getLocalHost().getHostAddress());
@@ -78,6 +78,7 @@ public class SocketClien {
                     switch (packageBean.getType()){
                         case 3: //接受到视频请求
                             new RequestSocket(packageBean).run();
+                            break;
                     }
                 }
             } catch (IOException e) {

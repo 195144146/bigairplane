@@ -66,8 +66,10 @@ public class SocketServer {
                     switch (packageBean.getType()){
                         case 1:
                             serviceHeartBeat(packageBean.getUserId(),socket);// 心跳
+                            break;
                         case 2:
                             serviceRequestSocket(packageBean,socket); //请求连接
+                            break;
                     }
                 }
             } catch (IOException e) {

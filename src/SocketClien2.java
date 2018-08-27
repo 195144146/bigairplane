@@ -130,6 +130,7 @@ public class SocketClien2 {
                     switch (packageBean.getType()){
                         case 3: //接受到视频请求
                             new RequestSocket(packageBean,panel,frame).run();
+                            break;
                     }
                 }
             } catch (IOException e) {
