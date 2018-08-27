@@ -101,7 +101,7 @@ public class SocketServer {
             ObjectMapper objectMapper = new ObjectMapper();
             SocketConnectionBean socketConnectionBean = null;
             try {
-                socketConnectionBean = objectMapper.readValue(packageBean.getContent().toString(),SocketConnectionBean.class);
+                socketConnectionBean = objectMapper.readValue(objectMapper.writeValueAsString(packageBean.getContent()),SocketConnectionBean.class);
             } catch (IOException e) {
                 e.printStackTrace();
             }
