@@ -137,6 +137,7 @@ public class SocketServer {
                     packageBean3.setType(3);//返回请求连接
                     packageBean3.setIndex(1L);
                     packageBean3.setTotal(1L);
+                    packageBean3.setContent(socketConnectionBean2);
                     /*输出内容封装完毕*/
                     outputStream2.write(objectMapper.writeValueAsBytes(packageBean3));
                 } catch (IOException e) {

@@ -15,7 +15,6 @@ import java.net.Socket;
  */
 public class SocketClien2 {
 
-
     static String host;
     static Integer port;
 
