@@ -2,7 +2,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.opencv.core.Mat;
 import org.opencv.highgui.HighGui;
 import org.opencv.videoio.VideoCapture;
-
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -107,6 +106,7 @@ public class SocketClien {
                 ObjectMapper objectMapper = new ObjectMapper();
                 SocketConnectionBean socketConnectionBean = objectMapper.readValue(packageBean.getContent().toString(),SocketConnectionBean.class);
                 socket.connect(new InetSocketAddress(socketConnectionBean.getRequestUserNetAddress(),socketConnectionBean.getRequestUserport()));
+                System.out.println("接受到请求连接ip:"+socketConnectionBean.getRequestUserNetAddress()+" port"+socketConnectionBean.getRequestUserport());
                 String relativelyPath=System.getProperty("user.dir");
                 System.load(relativelyPath+"\\out\\production\\UDP\\video\\opencv_java342.dll");
                 VideoCapture cap = new VideoCapture(0);

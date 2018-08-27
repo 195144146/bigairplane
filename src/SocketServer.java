@@ -1,4 +1,6 @@
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.deploy.panel.WinUpdatePanel;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -79,8 +81,8 @@ public class SocketServer {
          */
         private void serviceHeartBeat(Long userId, Socket socket){
             SocketServer.socketMap.put(userId,socket);
-            System.out.println(socket.getInetAddress().getHostAddress());
-            System.out.println(socket.getPort());
+            System.out.print("接受到心跳来源 ip:"+socket.getInetAddress().getHostAddress());
+            System.out.println(" port:"+socket.getPort());
         }
 
         /**
@@ -89,8 +91,9 @@ public class SocketServer {
         private void serviceRequestSocket(PackageBean packageBean,Socket socket){
             String ip = socket.getInetAddress().getHostAddress(); //获取ip
             Integer port = socket.getPort(); //获取端口
-            System.out.println(ip);
-            System.out.println(port);
+            System.out.print("ip:"+ip);
+            System.out.print(" port:"+port);
+            System.out.print("请求连接");
             Long userId = packageBean.getUserId();//获取用户id
             serviceHeartBeat(userId,socket);//设置有效
             ObjectMapper objectMapper = new ObjectMapper();
@@ -106,7 +109,9 @@ public class SocketServer {
                     OutputStream outputStream = socket.getOutputStream(); //请求socket输出流
                     /*封装输出内容开始*/
                     socketConnectionBean.setRequestUserNetAddress(requestSocket.getInetAddress().getHostAddress());  //对方地址ip
+                    System.out.print("目标ip:"+requestSocket.getInetAddress().getHostAddress());
                     socketConnectionBean.setRequestUserport(requestSocket.getPort()); //对方端口
+                    System.out.println(" port:"+requestSocket.getPort());
                     socketConnectionBean.setStatus(true); //可以请求
                     socketConnectionBean.setUserId(0L); //服务器
                     PackageBean packageBean2 = new PackageBean();
@@ -137,6 +142,7 @@ public class SocketServer {
                 }
             }else{
                 try {
+                    System.out.println("无目标信息");
                     OutputStream outputStream = socket.getOutputStream(); //请求socket输出流
                     SocketConnectionBean socketConnectionBean2 = new SocketConnectionBean();
                     socketConnectionBean2.setStatus(false); //可以请求

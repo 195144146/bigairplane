@@ -46,8 +46,8 @@ public class SocketClien2 {
                 host = InetAddress.getLocalHost().getHostAddress();
                 System.out.println(socket.getLocalPort());
                 port = socket.getLocalPort();
-                new HeartbeatSocket(socket).run(); //启动心跳包
-                new RunnableSocket(socket,panel,this).run(); //启动接受监听
+                new HeartbeatSocket(socket).start(); //启动心跳包
+                new RunnableSocket(socket,panel,this).start(); //启动接受监听
             } catch (Exception e){
 
             }
@@ -105,7 +105,7 @@ public class SocketClien2 {
     /**
      * 接收监听
      */
-    public static class RunnableSocket implements Runnable {
+    public static class RunnableSocket extends Thread {
 
         private Socket socket;
         private ImagePanel panel;
@@ -142,7 +142,7 @@ public class SocketClien2 {
     /**
      * 请求socket连接
      */
-    public static class RequestSocket implements Runnable {
+    public static class RequestSocket extends Thread {
         private PackageBean packageBean;
         private ImagePanel panel;
         private ImageFrame frame;
@@ -156,13 +156,13 @@ public class SocketClien2 {
         @Override
         public void run() {
             Socket socket = new Socket();
-
             try {
                 socket.setReuseAddress(true);
                 socket.bind(new InetSocketAddress(host,port));
                 ObjectMapper objectMapper = new ObjectMapper();
                 SocketConnectionBean socketConnectionBean = objectMapper.readValue(packageBean.getContent().toString(),SocketConnectionBean.class);
                 socket.connect(new InetSocketAddress(socketConnectionBean.getRequestUserNetAddress(),socketConnectionBean.getRequestUserport()));
+                System.out.println("接受到请求连接ip:"+socketConnectionBean.getRequestUserNetAddress()+" port"+socketConnectionBean.getRequestUserport());
 //                String relativelyPath=System.getProperty("user.dir");
 //                System.load(relativelyPath+"\\out\\production\\UDP\\video\\opencv_java342.dll");
 //                VideoCapture cap = new VideoCapture(0);
@@ -179,6 +179,7 @@ public class SocketClien2 {
 //                }
                 InputStream inputStream = socket.getInputStream();
                 byte[] buf = new byte[1024];
+                System.out.println("开始接受信息");
                 //读取流中数据 阻塞式
                 while (true) {
                     int len = inputStream.read(buf);
@@ -201,7 +202,7 @@ public class SocketClien2 {
     /**
      * 心跳包
      */
-    public static class HeartbeatSocket implements Runnable {
+    public static class HeartbeatSocket extends Thread {
 
         private Socket socket;
 
