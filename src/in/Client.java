@@ -41,7 +41,7 @@ public class Client {
             socket.setReuseAddress(true);
 
             //TODO在此输入外网地址和端口
-            String ip = "xxx.xxxx.xxxx.xxxx";
+            String ip = "195144146.tpddns.cn";
             int port = 8888;
             socket.connect(new InetSocketAddress(ip, port));
 
