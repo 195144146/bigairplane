@@ -41,6 +41,7 @@ public class SocketClien2 {
                 socket.setReuseAddress(true);//设置SO_REUSEADDR
     //        socket.connect(new InetSocketAddress("127.0.0.1",9001));
                 socket.connect(inetSocketAddress);//连接服务器
+                System.out.println();
                 System.out.println(InetAddress.getLocalHost().getHostAddress());
                 host = InetAddress.getLocalHost().getHostAddress();
                 System.out.println(socket.getLocalPort());
@@ -159,10 +160,18 @@ public class SocketClien2 {
             try {
                 socket.setReuseAddress(true);
                 socket.bind(new InetSocketAddress(host,port));
+                System.out.println("绑定ip:"+host+" port:"+port);
                 ObjectMapper objectMapper = new ObjectMapper();
                 SocketConnectionBean socketConnectionBean = objectMapper.readValue(objectMapper.writeValueAsString(packageBean.getContent()),SocketConnectionBean.class);
-                System.out.println("接受到请求连接ip:"+socketConnectionBean.getRequestUserNetAddress()+" port"+socketConnectionBean.getRequestUserport());
-                socket.connect(new InetSocketAddress(socketConnectionBean.getRequestUserNetAddress(),socketConnectionBean.getRequestUserport()));
+                System.out.println("接受到请求连接ip:"+socketConnectionBean.getRequestUserNetAddress()+" port:"+socketConnectionBean.getRequestUserport());
+
+                while (!socket.isConnected()) {
+                    try {
+                        socket.connect(new InetSocketAddress(socketConnectionBean.getRequestUserNetAddress(), socketConnectionBean.getRequestUserport()));
+                    }catch (IOException e){
+                        System.out.println(e.getMessage());
+                    }
+                }
 //                String relativelyPath=System.getProperty("user.dir");
 //                System.load(relativelyPath+"\\out\\production\\UDP\\video\\opencv_java342.dll");
 //                VideoCapture cap = new VideoCapture(0);
@@ -177,6 +186,7 @@ public class SocketClien2 {
 //                    OutputStream outputStream1 = socket.getOutputStream();
 //                    outputStream1.write(ss,0,ss.length);
 //                }
+                System.out.println("连接成功");
                 InputStream inputStream = socket.getInputStream();
                 byte[] buf = new byte[1024];
                 System.out.println("开始接受信息");
