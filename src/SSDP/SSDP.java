@@ -1,10 +1,12 @@
 package SSDP;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.InetSocketAddress;
-import java.net.Socket;
+import java.net.*;
 
 /**
  * Created By 虞嘉俊 195144146@qq.com on 2018/9/11
@@ -18,23 +20,32 @@ public class SSDP {
      */
     public static void main(String[] args) throws IOException {
 
-        Socket socket = new Socket();
-        socket.connect(new InetSocketAddress("239.255.255.255",1900));
+//        Socket socket = new Socket();
+//        socket.connect(new InetSocketAddress("192.168.0.185",1900));
         StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append("M-SEARCH * HTTP/1.1\r\n");
-        stringBuffer.append("HOST: 239.255.255.255:1900\r\n");
-        stringBuffer.append("MAN: \"ssdp:discover\"\r\n");
-        stringBuffer.append("MX: 5\r\n");
-        stringBuffer.append("ST: upnp:rootdevice\r\n");
-        System.out.println(stringBuffer.toString());
-        OutputStream outputStream = socket.getOutputStream();
-        outputStream.write(stringBuffer.toString().getBytes(),0,stringBuffer.toString().getBytes().length);
-        InputStream inputStream = socket.getInputStream();
-        byte[] buf = new byte[4096];
-        int len = inputStream.read(buf);
-        String content = new String(buf);
-        System.out.println(content);
+        stringBuffer.append("NOTIFY * HTTP/1.1\r\n");
+        stringBuffer.append("HOST: 239.255.255.250:1900\r\n");
+        stringBuffer.append("CACHE-CONTROL: max-age= 1900\r\n");
+        stringBuffer.append("LOCATION: http://192.168.0.15:5000/ssdp/desc-DSM-eth0.xml\r\n");
+        stringBuffer.append("NT: upnp:rootdevice\r\n");
+        stringBuffer.append("NTS: ssdp:alive\r\n");
+        stringBuffer.append("SERVER: Synology/DSM/192.168.0.15\r\n");
+        stringBuffer.append("USN: uuid:73796E6F-6473-6D00-0000-00113278f99::upnp:rootdevice\r\n");
+        stringBuffer.append("\r\n");
 
+        System.out.println(stringBuffer.toString());
+
+        DatagramSocket datagramSocket = new DatagramSocket();
+        DatagramPacket datagramPacket = new DatagramPacket(stringBuffer.toString().getBytes(),stringBuffer.toString().getBytes().length, InetAddress.getByName("239.255.255.250"),1900);
+        datagramSocket.send(datagramPacket);
+
+        byte[] buf = new byte[100000];
+        DatagramPacket datagramPacket2 = new DatagramPacket(buf,buf.length);
+        datagramSocket.receive(datagramPacket2);
+
+        byte[] imageByte = datagramPacket2.getData();
+        String content = new String(imageByte);
+        System.out.println(content);
 
 
 
