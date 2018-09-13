@@ -1,5 +1,7 @@
 package SSDP;
 
+import jdk.nashorn.internal.objects.annotations.Where;
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -25,7 +27,7 @@ public class SSDP {
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append("NOTIFY * HTTP/1.1\r\n");
         stringBuffer.append("HOST: 239.255.255.250:1900\r\n");
-        stringBuffer.append("CACHE-CONTROL: max-age= 1900\r\n");
+        stringBuffer.append("CACHE-CONTROL: max-age= 30\r\n");
         stringBuffer.append("LOCATION: http://192.168.0.15:5000/ssdp/desc-DSM-eth0.xml\r\n");
         stringBuffer.append("NT: upnp:rootdevice\r\n");
         stringBuffer.append("NTS: ssdp:alive\r\n");
@@ -37,15 +39,24 @@ public class SSDP {
 
         DatagramSocket datagramSocket = new DatagramSocket();
         DatagramPacket datagramPacket = new DatagramPacket(stringBuffer.toString().getBytes(),stringBuffer.toString().getBytes().length, InetAddress.getByName("239.255.255.250"),1900);
-        datagramSocket.send(datagramPacket);
+        while (true){
+            try {
+                Thread.sleep(1000*10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            datagramSocket.send(datagramPacket);
 
-        byte[] buf = new byte[100000];
-        DatagramPacket datagramPacket2 = new DatagramPacket(buf,buf.length);
-        datagramSocket.receive(datagramPacket2);
+        }
 
-        byte[] imageByte = datagramPacket2.getData();
-        String content = new String(imageByte);
-        System.out.println(content);
+//        byte[] buf = new byte[100000];
+
+//        DatagramPacket datagramPacket2 = new DatagramPacket(buf,buf.length);
+//        datagramSocket.receive(datagramPacket2);
+
+//        byte[] imageByte = datagramPacket2.getData();
+//        String content = new String(imageByte);
+//        System.out.println(content);
 
 
 
